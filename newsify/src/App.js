@@ -1,26 +1,40 @@
+import React from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-import React from 'react'
-import Navbar from './components/Navbar'
-import {BrowserRouter, Routes, Route} from "react-router-dom";
-import Home from './Pages/Home';
-import Categories from './Pages/Categories';
 
-const App = () => {
+function App() {
+  const [news, setNews] = useState([])
+  useEffect(() => {
+    axios.get("https://newsapi.org/v2/top-headlines?country=in&category=general&apiKey=8d52856bedbd4775874916252fdd9f92").then((res => {
+      console.log(res.data.articles);
+      setNews(res.data.articles)
+    }))
+  })
   return (
-    <div>
-        <Navbar/>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/home" element={<Home/>}></Route>
-          <Route path="/general" element={<Categories cat="general" />}></Route>
-          <Route path="/business" element={<Categories cat="business" />}></Route>
-          <Route path="/entertainment" element={<Categories cat="entertainment" />}></Route>
-          <Route path="/science" element={<Categories cat="science" />}></Route>
-          <Route path="/sports" element={<Categories cat="sports" />}></Route>
-          <Route path="/technology" element={<Categories cat="technology" />}></Route>
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <>
+    
+      <div className="container my-5">
+        <div className="row text-center">
+          {
+            news.map((val)=>{
+              return(
+                <div className="col my-3">
+            <div className="card" style={{width: "18rem"}}>
+              <img src={val.urlToImage} class="card-img-top" alt="..." />
+                <div className="card-body">
+                  <h5 className="card-title">{val.title}</h5>
+                  <p className="card-text">{val.description}</p>
+                  <button className='btn btn-primary text-dark'><a className="text-white" href={val.url}>Know More</a></button>
+                </div>
+            </div>
+          </div>
+              )
+            })
+          }
+        </div>
+      </div>
+    </>
   )
 }
 
